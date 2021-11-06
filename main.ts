@@ -2,6 +2,25 @@ makerbit.onIrButton(IrButton.Number_3, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
     setColor(240)
 })
+makerbit.onIrButton(IrButton.Number_0, IrButtonAction.Pressed, function () {
+    onButton(makerbit.irButton())
+    if (allumée) {
+        allumée = false
+        strip.setBrightness(0)
+        basic.showLeds(`
+            . . . . .
+            . . . . .
+            . . # . .
+            . . . . .
+            . . . . .
+            `)
+    } else {
+        allumée = true
+        strip.setBrightness(255)
+        basic.showIcon(IconNames.SmallDiamond)
+    }
+    serial.writeLine("allumee:" + allumée)
+})
 makerbit.onIrButton(IrButton.Number_1, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
     setColor(0)
@@ -66,6 +85,7 @@ function onButton (id: number) {
     serial.writeLine("onButton:" + id2str(id))
     basic.showString("" + (id2str(id)))
 }
+let allumée = false
 let couleur = 0
 let strip: neopixel.Strip = null
 serial.writeLine("led-telecommande")
@@ -73,3 +93,4 @@ makerbit.connectIrReceiver(DigitalPin.P2, IrProtocol.NEC)
 basic.showIcon(IconNames.Heart)
 strip = neopixel.create(DigitalPin.P0, 160, NeoPixelMode.RGBW)
 couleur = 0
+allumée = true
