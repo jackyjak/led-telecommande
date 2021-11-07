@@ -2,10 +2,18 @@ makerbit.onIrButton(IrButton.Number_3, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
     setColor(240)
 })
+makerbit.onIrButton(IrButton.Hash, IrButtonAction.Pressed, function () {
+    onButton(makerbit.irButton())
+    for (let index = 0; index <= 60; index++) {
+        strip.setPixelWhiteLED(index, allumee ? 255 : 0)
+        serial.writeLine("LedW[" + index + "]\t=" + allumee)
+    }
+    basic.showIcon(IconNames.Yes)
+})
 makerbit.onIrButton(IrButton.Number_0, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
-    if (allumée) {
-        allumée = false
+    if (allumee) {
+        allumee = false
         strip.setBrightness(0)
         basic.showLeds(`
             . . . . .
@@ -15,11 +23,11 @@ makerbit.onIrButton(IrButton.Number_0, IrButtonAction.Pressed, function () {
             . . . . .
             `)
     } else {
-        allumée = true
+        allumee = true
         strip.setBrightness(255)
         basic.showIcon(IconNames.SmallDiamond)
     }
-    serial.writeLine("allumee:" + allumée)
+    serial.writeLine("allumee:" + allumee)
 })
 makerbit.onIrButton(IrButton.Number_1, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
@@ -28,6 +36,16 @@ makerbit.onIrButton(IrButton.Number_1, IrButtonAction.Pressed, function () {
 makerbit.onIrButton(IrButton.Left, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
     setColor((couleur - 15) % 360)
+})
+makerbit.onIrButton(IrButton.Star, IrButtonAction.Pressed, function () {
+    onButton(makerbit.irButton())
+    strip.showRainbow(1, 90)
+    for (let index2 = 0; index2 <= 159; index2++) {
+        strip.shift(1)
+        control.waitMicros(2)
+        serial.writeNumber(index2)
+    }
+    basic.showIcon(IconNames.Happy)
 })
 makerbit.onIrButton(IrButton.Number_2, IrButtonAction.Pressed, function () {
     onButton(makerbit.irButton())
@@ -85,12 +103,13 @@ function onButton (id: number) {
     serial.writeLine("onButton:" + id2str(id))
     basic.showString("" + (id2str(id)))
 }
-let allumée = false
 let couleur = 0
 let strip: neopixel.Strip = null
+let allumee = false
 serial.writeLine("led-telecommande")
 makerbit.connectIrReceiver(DigitalPin.P2, IrProtocol.NEC)
 basic.showIcon(IconNames.Heart)
 strip = neopixel.create(DigitalPin.P0, 160, NeoPixelMode.RGBW)
 couleur = 0
-allumée = true
+allumee = true
+strip.showRainbow(1, 360)
